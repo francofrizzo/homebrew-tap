@@ -21,7 +21,7 @@ class PrintLabel < Formula
       venv.pip_install Pathname.pwd
     end
 
-    venv.pip_install "label"
+    venv.pip_install buildpath/"label"
   end
 
   def post_install
