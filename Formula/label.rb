@@ -7,14 +7,15 @@ class Label < Formula
   sha256 "dbddc4ef7dab4488a064570881104bcc2c1e6cb8ad11a26f16dc8d00ee732eca"
   license "MIT"
 
-  depends_on "python@3.11"
+  depends_on "python@3.13"
 
+  # Python dependencies
   resource "bleak" do
-    url "https://files.pythonhosted.org/packages/fc/a5/47009938c89176d199b6d51e97475a1ca9fc33ae79f21ae41ddb49c4e32e/bleak-0.22.3.tar.gz"
-    sha256 "bc9f4b8ad7f76f409db0c451c41e0e52f00d3e861d8ff90e75f2b98e8b6e06ae"
+    url "https://files.pythonhosted.org/packages/45/8a/5acbd4da6a5a301fab56ff6d6e9e6b6945e6e4a2d1d213898c21b1d3a19b/bleak-2.1.1.tar.gz"
+    sha256 "4600cc5852f2392ce886547e127623f188e689489c5946d422172adf80635cf9"
   end
 
-  resource "Pillow" do
+  resource "pillow" do
     url "https://files.pythonhosted.org/packages/a5/26/0d95c04c868f6bdb0c447e3ee2de5564411845e36a858cfd63766bc7b563/pillow-11.0.0.tar.gz"
     sha256 "72bacbaf24ac003fea9bff9837d1eedb6088758d41e100c1552930151f677739"
   end
@@ -25,23 +26,29 @@ class Label < Formula
   end
 
   resource "opencv-python" do
-    url "https://files.pythonhosted.org/packages/4a/e7/b70a2d9ab205110d715906fc8ec83fbb00404aeb3a37a0654fdb68e5d87b/opencv-python-4.11.0.86.tar.gz"
-    sha256 "4d8a7e45bf48302e838510d621dbfc53c1e2ce0e3ab2709afdaa70e6cd82e93c"
+    url "https://files.pythonhosted.org/packages/9e/a8/8a8389060a2d212ca64ac6f6e494da6f5c0cebc96a7e74c6f1dde82acf11/opencv_python-4.10.0.84-cp37-abi3-macosx_11_0_arm64.whl"
+    sha256 "33081b4f0e0dc29a8f2af5c77c748daa1ee63fc6279c0f75104e587054ee7c2a"
   end
 
   def install
+    # Install Python dependencies into virtualenv
     virtualenv_install_with_resources
 
-    # Install label from the label subdirectory
+    # Navigate to label subdirectory
     cd "label" do
-      # Copy lib directory to the virtualenv
-      (libexec/"lib").install "lib/catprinter"
+      # Copy the catprinter library into the virtualenv
+      (libexec/Language::Python.site_packages("python3.13")).install "lib/catprinter"
 
       # Install the main script
       bin.install "bin/label"
 
-      # Fix the shebang and paths
+      # Rewrite shebang to use virtualenv python
       rewrite_shebang detected_python_shebang, bin/"label"
+
+      # Fix the import path in the script to use the virtualenv
+      inreplace bin/"label",
+        "sys.path.insert(0, str(SCRIPT_DIR / 'lib'))",
+        "sys.path.insert(0, '#{libexec/Language::Python.site_packages("python3.13")}')"
     end
   end
 
