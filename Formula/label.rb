@@ -15,9 +15,16 @@ class Label < Formula
   end
 
   def install
-    cd "label" do
-      virtualenv_install_with_resources
+    # Create virtualenv
+    venv = virtualenv_create(libexec, "python3.13")
+
+    # Install bleak into virtualenv
+    resource("bleak").stage do
+      venv.pip_install Pathname.pwd
     end
+
+    # Install label package from subdirectory
+    venv.pip_install "label"
   end
 
   def post_install
