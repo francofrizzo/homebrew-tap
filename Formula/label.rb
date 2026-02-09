@@ -25,8 +25,8 @@ class Label < Formula
   end
 
   resource "opencv-python" do
-    url "https://files.pythonhosted.org/packages/4a/e7/b70a2d9ab205110d715906fc8ec83fbb00404aeb3a37a0654fdb68e5d87b/opencv-python-4.11.0.86.tar.gz"
-    sha256 "4d8a7e45bf48302e838510d621dbfc53c1e2ce0e3ab2709afdaa70e6cd82e93c"
+    url "https://files.pythonhosted.org/packages/17/06/68c27a523103dad5837dc5b87e71285280c4f098c60e4fe8a8db6486ab09/opencv-python-4.11.0.86.tar.gz"
+    sha256 "03d60ccae62304860d232272e4a4fda93c39d595780cb40b161b310244b736a4"
   end
 
   def install
