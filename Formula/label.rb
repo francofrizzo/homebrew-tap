@@ -14,37 +14,55 @@ class Label < Formula
     sha256 "4600cc5852f2392ce886547e127623f188e689489c5946d422172adf80635cf9"
   end
 
-  resource "pillow" do
-    url "https://files.pythonhosted.org/packages/a5/26/0d95c04c868f6bdb0c447e3ee2de5564411845e36a858cfd63766bc7b563/pillow-11.0.0.tar.gz"
-    sha256 "72bacbaf24ac003fea9bff9837d1eedb6088758d41e100c1552930151f677739"
-  end
-
-  resource "numpy" do
-    url "https://files.pythonhosted.org/packages/65/6e/09db70a523a96d25e115e71cc56a6f9031e7b8cd166c1ac8438307c14058/numpy-1.26.4.tar.gz"
-    sha256 "2a02aba9ed12e4ac4eb3ea9421c420301a0c6460d9830d74a9df87efa4912010"
-  end
-
-  resource "opencv-python" do
-    url "https://files.pythonhosted.org/packages/17/06/68c27a523103dad5837dc5b87e71285280c4f098c60e4fe8a8db6486ab09/opencv-python-4.11.0.86.tar.gz"
-    sha256 "03d60ccae62304860d232272e4a4fda93c39d595780cb40b161b310244b736a4"
-  end
-
   def install
-    # Change to label subdirectory where setup.py is
     cd "label" do
       virtualenv_install_with_resources
     end
   end
 
-  def caveats
-    <<~EOS
-      Print a label:
-        label "PANKO"
-        label "BREAD CRUMBS" --subtext "Japanese Style"
+  def post_install
+    # Try to install remaining dependencies
+    # These often fail to build from source, so install as wheels with pip
+    system libexec/"bin/python", "-m", "pip", "install", "--quiet",
+           "Pillow", "numpy", "opencv-python"
+  rescue
+    opoo "Some dependencies failed to install. Run manually:"
+    puts "  #{libexec}/bin/python -m pip install Pillow numpy opencv-python"
+  end
 
-      See all options:
-        label --help
-    EOS
+  def caveats
+    missing = []
+    begin
+      system libexec/"bin/python", "-c", "import PIL"
+    rescue
+      missing << "Pillow"
+    end
+    begin
+      system libexec/"bin/python", "-c", "import numpy"
+    rescue
+      missing << "numpy"
+    end
+    begin
+      system libexec/"bin/python", "-c", "import cv2"
+    rescue
+      missing << "opencv-python"
+    end
+
+    if missing.any?
+      <<~EOS
+        Missing dependencies detected. Install with:
+          #{libexec}/bin/python -m pip install #{missing.join(" ")}
+
+        Then print a label:
+          label "PANKO"
+      EOS
+    else
+      <<~EOS
+        Print a label:
+          label "PANKO"
+          label "BREAD CRUMBS" --subtext "Japanese Style"
+      EOS
+    end
   end
 
   test do
