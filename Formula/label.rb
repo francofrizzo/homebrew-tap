@@ -16,8 +16,8 @@ class Label < Formula
   end
 
   resource "pillow" do
-    url "https://files.pythonhosted.org/packages/a5/26/0d95c04c868f6bdb0c447e3ee2de5564411845e36a858cfd63766bc7b563/pillow-11.0.0.tar.gz"
-    sha256 "72bacbaf24ac003fea9bff9837d1eedb6088758d41e100c1552930151f677739"
+    url "https://files.pythonhosted.org/packages/94/55/7aca2891560188656e4a91ed9adba305e914a4496800da6b5c0a15f09edf/pillow-12.1.0-cp310-cp310-macosx_11_0_arm64.whl"
+    sha256 "cad302dc10fac357d3467a74a9561c90609768a6f73a1923b0fd851b6486f8b0"
   end
 
   resource "numpy" do
