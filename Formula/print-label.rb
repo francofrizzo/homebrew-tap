@@ -22,6 +22,9 @@ class PrintLabel < Formula
     end
 
     venv.pip_install buildpath/"label"
+
+    # Link the entry point to bin
+    (bin/"print-label").write_env_script(libexec/"bin/print-label", PATH: "#{libexec}/bin:$PATH")
   end
 
   def post_install
