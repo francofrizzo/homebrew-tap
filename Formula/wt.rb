@@ -1,8 +1,8 @@
 class Wt < Formula
   desc "Git worktree manager with GitHub PR and CI status integration"
   homepage "https://github.com/francofrizzo/wt"
-  url "https://github.com/francofrizzo/wt/archive/refs/tags/v0.10.1.tar.gz"
-  sha256 "57847980ee07cf22e0523dc36e6afd08f95874f9068dee460a5106e8219c16a3"
+  url "https://github.com/francofrizzo/wt/archive/refs/tags/v0.10.2.tar.gz"
+  sha256 "a454e161516fb61cacfa4c41c7f305fa94053913b2b907c778a98202926a7080"
   license "MIT"
 
   depends_on "jq"
