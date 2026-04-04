@@ -3,8 +3,8 @@ class PrintLabel < Formula
 
   desc "Thermal printer label maker for Bluetooth cat printers"
   homepage "https://github.com/francofrizzo/utilities"
-  url "https://github.com/francofrizzo/utilities/archive/refs/tags/label-v0.5.0.tar.gz"
-  sha256 "0e901ec4e212d3a8de91a7708a05141dde481aa5efad17f8c36a7db79fc205ae"
+  url "https://github.com/francofrizzo/utilities/archive/refs/tags/label-v0.6.0.tar.gz"
+  sha256 "70397c14f2e705b2b263a00d400dc646462bacfc2ef8c2ded7b1a2eac01e656a"
   license "MIT"
 
   depends_on "python@3.13"
