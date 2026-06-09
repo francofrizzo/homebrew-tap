@@ -6,30 +6,30 @@ class PrintLabel < Formula
   url "https://github.com/francofrizzo/utilities/archive/refs/tags/label-v0.6.0.tar.gz"
   sha256 "70397c14f2e705b2b263a00d400dc646462bacfc2ef8c2ded7b1a2eac01e656a"
   license "MIT"
+  revision 1
 
   depends_on "python@3.13"
 
-  resource "bleak" do
-    url "https://files.pythonhosted.org/packages/45/8a/5acbd4da6a5a301fab56ff6d6e9e6b6945e6e4a2d1d213898c21b1d3a19b/bleak-2.1.1.tar.gz"
-    sha256 "4600cc5852f2392ce886547e127623f188e689489c5946d422172adf80635cf9"
-  end
-
   def install
-    venv = virtualenv_create(libexec, "python3.13")
+    virtualenv_create(libexec, "python3.13")
 
-    resource("bleak").stage do
-      venv.pip_install Pathname.pwd
-    end
+    # Install the package itself without dependencies. The runtime
+    # dependencies are pulled in post_install, where network access is
+    # available: numpy, Pillow and especially opencv-python ship as binary
+    # wheels and are impractical to build from source as Homebrew resources.
+    system libexec/"bin/pip", "install", "--no-deps", "--no-build-isolation",
+           buildpath/"label"
 
-    venv.pip_install buildpath/"label"
-
-    # Link the entry point to bin
-    (bin/"print-label").write_env_script(libexec/"bin/print-label", PATH: "#{libexec}/bin:$PATH")
+    bin.install_symlink libexec/"bin/print-label"
+    bin.install_symlink libexec/"bin/print-image"
   end
 
   def post_install
-    system libexec/"bin/python", "-m", "pip", "install", "--quiet",
-           "Pillow", "numpy", "opencv-python"
+    # Mirror src/print_label setup.py install_requires. Installing bleak via
+    # pip pulls in its macOS Bluetooth backend (pyobjc-core,
+    # pyobjc-framework-CoreBluetooth) automatically.
+    system libexec/"bin/pip", "install", "--quiet",
+           "bleak>=0.20", "Pillow>=9.0", "numpy<2.0", "opencv-python<5.0"
   end
 
   def caveats
